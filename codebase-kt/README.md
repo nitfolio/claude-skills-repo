@@ -32,7 +32,9 @@ From inside the repo you want to learn:
 start KT
 ```
 
-Then steer with single words: `continue`, `deeper`, `skip`, `jump to auth`, `why`, `summarize`, `stop`.
+Then steer with single words: `continue`, `deeper`, `skip`, `jump to auth`, `why`, `summarize`, `pause`, `stop`.
+`pause` suspends cleanly (resume later with `start`); `stop` finishes and writes a curated `08-onboarding.md`
+deliverable distilled from the trail.
 An experienced engineer can ignore the controls and just ask their own questions.
 
 Findings accumulate in `.kt/` at the repo root. `00-progress.md` is the resumable state file — a fresh

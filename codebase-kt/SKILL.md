@@ -138,8 +138,14 @@ after a stage is actually done and evidence-backed.
 ├── 04-key-flows.md       ← traced end-to-end flows with file:line waypoints
 ├── 05-dependencies.md    ← dependency notes + blast-radius warnings
 ├── 06-operations.md      ← build/deploy/config, known fragile spots
-└── 07-safe-contribution.md ← good first areas + how to run and verify a change
+├── 07-safe-contribution.md ← good first areas + how to run and verify a change
+└── 08-onboarding.md      ← the clean, curated deliverable (produced on `stop` — see below)
 ```
+
+Files `00`–`07` are the **working trail**: evidence-tagged, honest, full of `[unknown]`s — a record of
+the learning, for you mid-session and for anyone who wants to see the reasoning. Leave them raw; don't
+polish them. `08-onboarding.md` is different — it's the distilled, reader-facing document, and it's only
+written at the end (see "Finishing: pause vs. stop").
 
 `00-progress.md` is special: keep it current every turn. It makes KT **resumable** — a fresh session
 should be able to read it and continue exactly where the last one stopped. Use checkboxes for stages
@@ -158,10 +164,40 @@ session with single words:
 - **jump to <topic>** — go to a specific area (e.g. "jump to auth", "jump to the payment flow")
 - **why** — explain the reasoning/evidence behind the last claim in more detail
 - **summarize** — give the current state of understanding and remaining unknowns
-- **stop** — wrap up and make sure `.kt/` is written
+- **pause** — suspend cleanly and leave a bookmark; resume later with `start`
+- **stop** — finish the session and synthesize the curated onboarding deliverable
 
 An experienced engineer can ignore all of this and just ask their own questions — the skill should
 follow their lead when they do.
+
+## Finishing: pause vs. stop
+
+These two are deliberately different promises. `pause` means "I'll be back"; `stop` means "I'm done."
+
+**pause** — Suspend the session. State is already safe (you update `00-progress.md` every turn), so this
+is a clean exit and bookmark, not a save operation: restate in one or two lines where things stand and
+what's next, confirm `00-progress.md` is current, and remind them they can resume anytime with `start`.
+Do **not** generate the onboarding deliverable on pause.
+
+**stop** — Finish and produce `08-onboarding.md`, the clean reader-facing document — but guard it:
+
+1. **Check coverage first.** If exploration is thin (only a couple of the key areas covered), do not
+   silently generate a polished doc from a barely-explored repo — that manufactures exactly the
+   confident-but-wrong artifact this skill exists to prevent. Say what's covered vs. missing and offer:
+   synthesize now anyway, keep going, or just pause. Only proceed to synthesis on a clear yes or when
+   coverage is genuinely sufficient.
+2. **Synthesize with a confidence filter.** Build `08-onboarding.md` *from* the `.kt/` trail, but:
+   - promote only **[fact]** and human-confirmed knowledge into the body as settled statements;
+   - **drop** dead-end explorations and anything that was only ever a guess;
+   - carry every remaining **[unknown]** and unpromoted **[inference]** into an explicit
+     **"Assumptions & things to verify with a human"** section — never launder them into confident prose.
+3. **Keep it lean.** A tight, true onboarding doc beats an exhaustive one nobody trusts. Resist turning
+   this into a handbook.
+
+Suggested shape for `08-onboarding.md`: a one-paragraph "what this system is" a newcomer could repeat
+back; an architecture map (text or mermaid); a domain glossary; one or two traced key flows with real
+file references; a "your first change" section (a low-risk area + how to run and verify); and the
+"Assumptions & things to verify" list. It should be readable start to finish without ever running the skill.
 
 ## Interaction style
 
@@ -189,7 +225,7 @@ five-part menu. Match the human's pace: if they say "deeper" a lot, they want de
 > **Proposed next step:** map the domain concepts (subscription, invoice, ledger…) and what each owns —
 > because every later flow will reference these, so learning them first makes everything else cheaper.
 >
-> _continue · deeper · skip · jump to <topic> · summarize · stop_
+> _continue · deeper · skip · jump to <topic> · summarize · pause · stop_
 
 Then stop and wait. That rhythm — real evidence, honest unknowns, one confident next step — is the
 whole skill.
