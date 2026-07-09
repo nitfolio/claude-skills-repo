@@ -123,6 +123,14 @@ infrastructure-as-code, plus embedded/firmware, smart contracts, and notebook-he
 The list isn't exhaustive — if nothing fits cleanly, use the **generic fallback playbook** at the end of
 that file rather than forcing a bad match. If it's a mix, name the pieces and pick the dominant one to start.
 
+The classification is a working hypothesis, not a commitment. If evidence at a later stage contradicts
+it — a second, equally-weighted app shows up, or the dominant type is clearly something else — say so
+plainly, switch to the matching playbook, and record the correction and its reason as a dated note in
+`00-progress.md` (e.g. "Reclassified after Architecture: initially called this a backend service; found
+`packages/mobile` with equal weight to the API — now treating as mixed, running the API playbook for the
+core and flagging mobile as a separate unexplored slice"). Don't keep following a playbook that no longer
+fits just because it was the first guess.
+
 ## Artifacts: leave a permanent onboarding trail
 
 KT should outlive the chat. As you complete stages, write findings to a `.kt/` directory at the repo
@@ -139,7 +147,8 @@ after a stage is actually done and evidence-backed.
 ├── 05-dependencies.md    ← dependency notes + blast-radius warnings
 ├── 06-operations.md      ← build/deploy/config, known fragile spots
 ├── 07-safe-contribution.md ← good first areas + how to run and verify a change
-└── 08-onboarding.md      ← the clean, curated deliverable (produced on `stop` — see below)
+└── 08-onboarding.md      ← the clean, curated deliverable (produced on `stop` — see below;
+                             optionally also exported as .pdf/.docx alongside it)
 ```
 
 Files `00`–`07` are the **working trail**: evidence-tagged, honest, full of `[unknown]`s — a record of
@@ -147,9 +156,17 @@ the learning, for you mid-session and for anyone who wants to see the reasoning.
 polish them. `08-onboarding.md` is different — it's the distilled, reader-facing document, and it's only
 written at the end (see "Finishing: pause vs. stop").
 
+Because `jump`/`skip` let stages happen out of order, a later stage sometimes resolves something an
+earlier file described as open, missing, or "not yet written" (e.g. Safe Contribution gets written before
+the Domain stage, then Domain fills in later). When that happens, go back and patch the earlier file's
+stale reference — don't leave a dangling claim that's no longer true. Do a quick pass for this specifically
+before `pause` or `stop`.
+
 `00-progress.md` is special: keep it current every turn. It makes KT **resumable** — a fresh session
 should be able to read it and continue exactly where the last one stopped. Use checkboxes for stages
-and a running "Open questions" list. Before creating `.kt/`, tell the human it's happening and mention
+and a running "Open questions" list. Each time you update it, also record a checkpoint — the current
+commit (`git rev-parse --short HEAD`) if the repo has git, otherwise today's date — so a future session
+can tell what may have changed since. Before creating `.kt/`, tell the human it's happening and mention
 they may want to gitignore it (or keep it — a curated `.kt/` can become real onboarding docs).
 
 ## The human's controls
@@ -157,7 +174,7 @@ they may want to gitignore it (or keep it — a curated `.kt/` can become real o
 State these once at the start, then keep replies simple. The human should be able to run the whole
 session with single words:
 
-- **start** — begin (or resume from `00-progress.md`)
+- **start** — begin (or resume from `00-progress.md`, with a staleness check — see below)
 - **continue** / **yes** — do the proposed next step
 - **deeper** — go further on the current topic instead of moving on
 - **skip** — the proposal isn't interesting; propose a different next step
@@ -193,11 +210,41 @@ Do **not** generate the onboarding deliverable on pause.
      **"Assumptions & things to verify with a human"** section — never launder them into confident prose.
 3. **Keep it lean.** A tight, true onboarding doc beats an exhaustive one nobody trusts. Resist turning
    this into a handbook.
+4. **Offer a quick predictive check, if it fits.** Real understanding shows up as the ability to predict
+   behavior, not just recall topics covered. Before finalizing, you can ask one or two questions drawn
+   from the traced flows — "what do you think happens if `<dependency>` fails or changes?" — and briefly
+   confirm or correct the answer. This is optional and cheap: skip it if the human just wants the
+   document, don't turn it into a quiz, and never gate the deliverable on it.
+5. **Ask which delivery format(s) they want.** Once `08-onboarding.md` is written, ask once:
+
+   1) **Markdown** (the file as-is), 2) **PDF**, 3) **DOCX**, 4) **all three**.
+
+   No answer → default to markdown only (already written) and don't block on it. For PDF and/or DOCX,
+   invoke the appropriate skill (`pdf` / `docx`) to convert `08-onboarding.md`'s content — don't hand-roll
+   document generation — and write the result alongside it in `.kt/` (e.g. `08-onboarding.pdf`,
+   `08-onboarding.docx`) so every requested deliverable lives together.
 
 Suggested shape for `08-onboarding.md`: a one-paragraph "what this system is" a newcomer could repeat
 back; an architecture map (text or mermaid); a domain glossary; one or two traced key flows with real
 file references; a "your first change" section (a low-risk area + how to run and verify); and the
 "Assumptions & things to verify" list. It should be readable start to finish without ever running the skill.
+
+## Resuming: staleness check
+
+When `start` finds an existing `00-progress.md`, don't trust the trail blindly — the repo may have moved
+on since it was written. Before continuing the ladder:
+
+1. Read the last recorded checkpoint (commit hash or date) from `00-progress.md`.
+2. If git is available, run `git log --oneline <checkpoint>..HEAD` (or `git log --since=<date>` if only a
+   date was recorded) and skim for touches to files the trail cited as `[fact]` evidence.
+3. Nothing changed → say so in one line and continue normally.
+4. Something changed → name the specific stages/files affected ("Payment flow in `04` cites
+   `razorpay.ts` — 2 commits touched it since this trail was last updated") and ask whether to re-verify
+   that area now or proceed with it flagged as a fresh `[unknown]`. Don't silently keep presenting a
+   possibly-outdated `[fact]` as current.
+
+This is a quick check, not a full re-audit — most resumes will find nothing changed and move on in a
+sentence. No git and no recorded checkpoint → skip the check and say so.
 
 ## Interaction style
 
